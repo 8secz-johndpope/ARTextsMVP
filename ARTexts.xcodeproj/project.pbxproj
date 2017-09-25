@@ -16,6 +16,8 @@
 		C114EBB81F792BB900F9E444 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C114EBB61F792BB900F9E444 /* LaunchScreen.storyboard */; };
 		C114EBC31F792BB900F9E444 /* ARTextsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBC21F792BB900F9E444 /* ARTextsTests.swift */; };
 		C114EBCE1F792BB900F9E444 /* ARTextsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBCD1F792BB900F9E444 /* ARTextsUITests.swift */; };
+		C114EBDC1F792E5100F9E444 /* ARSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBDB1F792E5100F9E444 /* ARSession.swift */; };
+		C114EBDE1F792FF200F9E444 /* ARText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBDD1F792FF200F9E444 /* ARText.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,8 @@
 		C114EBC91F792BB900F9E444 /* ARTextsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ARTextsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C114EBCD1F792BB900F9E444 /* ARTextsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARTextsUITests.swift; sourceTree = "<group>"; };
 		C114EBCF1F792BB900F9E444 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C114EBDB1F792E5100F9E444 /* ARSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSession.swift; sourceTree = "<group>"; };
+		C114EBDD1F792FF200F9E444 /* ARText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARText.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +113,8 @@
 				C114EBB41F792BB900F9E444 /* Assets.xcassets */,
 				C114EBB61F792BB900F9E444 /* LaunchScreen.storyboard */,
 				C114EBB91F792BB900F9E444 /* Info.plist */,
+				C114EBDB1F792E5100F9E444 /* ARSession.swift */,
+				C114EBDD1F792FF200F9E444 /* ARText.swift */,
 			);
 			path = ARTexts;
 			sourceTree = "<group>";
@@ -266,6 +272,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C114EBDC1F792E5100F9E444 /* ARSession.swift in Sources */,
+				C114EBDE1F792FF200F9E444 /* ARText.swift in Sources */,
 				C114EBB01F792BB900F9E444 /* ViewController.swift in Sources */,
 				C114EBAE1F792BB900F9E444 /* Scene.swift in Sources */,
 				C114EBAA1F792BB900F9E444 /* AppDelegate.swift in Sources */,
