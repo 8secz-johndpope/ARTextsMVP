@@ -38,7 +38,11 @@ class Scene: SKScene {
             if name == "cancelButton"
             {
                 guard let label = node.parent as? SKLabelNode else { return }
+                guard let viewController = self.view!.window!.rootViewController as? ViewController else { return }
+                guard let field = viewController.currentField else { return }
+                
                 label.text = ""
+                field.text = ""
             }
             else if name == "label"
             {

@@ -30,10 +30,12 @@ class ViewController: UIViewController, ARSKViewDelegate {
     
     var currentCameraLocation: matrix_float4x4?
     
-    private var currentField : UITextField?
+    public var currentField : UITextField?
     
     private var currentLabel : SKLabelNode? = nil
     public var createNew : Bool = false
+    
+    private var fontPicker : KWFontPicker = KWFontPicker()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +59,21 @@ class ViewController: UIViewController, ARSKViewDelegate {
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         
+        fontPicker.fontList = ["AmericanTypewriter"]
+        fontPicker.minFontSize = 8
+        fontPicker.maxFontSize = 30
+        fontPicker.colorVariants = KWFontPickerColorVariants.variants666
+        fontPicker.grayVariants = 16
+        
+        fontPicker.setChangeHandler((() -> Void)!{
+            DispatchQueue.main.async {
+                
+            }
+        })
+        
+        self.sceneView.addSubview(fontPicker)
+        
+        fontPicker.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -115,7 +132,7 @@ class ViewController: UIViewController, ARSKViewDelegate {
         label.removeFromParent()
         
         //MARK: Delete the label from the scene
-        print("njli_fopen the artext")
+        print("delete the artext")
     }
     
     func createLabel(_ text: String, labelNodeFor textAnchor: ARAnchorText)

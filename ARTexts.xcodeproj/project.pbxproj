@@ -18,6 +18,8 @@
 		C114EBCE1F792BB900F9E444 /* ARTextsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBCD1F792BB900F9E444 /* ARTextsUITests.swift */; };
 		C114EBDC1F792E5100F9E444 /* ARSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBDB1F792E5100F9E444 /* ARSession.swift */; };
 		C114EBDE1F792FF200F9E444 /* ARText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBDD1F792FF200F9E444 /* ARText.swift */; };
+		C1895F181F9F639500D16E7C /* KWTextEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = C1895F141F9F639500D16E7C /* KWTextEditor.m */; };
+		C1895F191F9F639500D16E7C /* KWFontPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = C1895F161F9F639500D16E7C /* KWFontPicker.m */; };
 		C1B85B681F7988A600FEED82 /* ARAnchorText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B85B671F7988A600FEED82 /* ARAnchorText.swift */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +58,11 @@
 		C114EBCF1F792BB900F9E444 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C114EBDB1F792E5100F9E444 /* ARSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSession.swift; sourceTree = "<group>"; };
 		C114EBDD1F792FF200F9E444 /* ARText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARText.swift; sourceTree = "<group>"; };
+		C1895F131F9F639400D16E7C /* ARTexts-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ARTexts-Bridging-Header.h"; sourceTree = "<group>"; };
+		C1895F141F9F639500D16E7C /* KWTextEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KWTextEditor.m; path = KWFontPicker/src/KWTextEditor.m; sourceTree = SOURCE_ROOT; };
+		C1895F151F9F639500D16E7C /* KWTextEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KWTextEditor.h; path = KWFontPicker/src/KWTextEditor.h; sourceTree = SOURCE_ROOT; };
+		C1895F161F9F639500D16E7C /* KWFontPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KWFontPicker.m; path = KWFontPicker/src/KWFontPicker.m; sourceTree = SOURCE_ROOT; };
+		C1895F171F9F639500D16E7C /* KWFontPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KWFontPicker.h; path = KWFontPicker/src/KWFontPicker.h; sourceTree = SOURCE_ROOT; };
 		C1B85B671F7988A600FEED82 /* ARAnchorText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARAnchorText.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +94,7 @@
 		C114EB9D1F792BB900F9E444 = {
 			isa = PBXGroup;
 			children = (
+				C1895F121F9F633000D16E7C /* KWFontPicker */,
 				C114EBA81F792BB900F9E444 /* ARTexts */,
 				C114EBC11F792BB900F9E444 /* ARTextsTests */,
 				C114EBCC1F792BB900F9E444 /* ARTextsUITests */,
@@ -138,6 +146,19 @@
 				C114EBCF1F792BB900F9E444 /* Info.plist */,
 			);
 			path = ARTextsUITests;
+			sourceTree = "<group>";
+		};
+		C1895F121F9F633000D16E7C /* KWFontPicker */ = {
+			isa = PBXGroup;
+			children = (
+				C1895F171F9F639500D16E7C /* KWFontPicker.h */,
+				C1895F161F9F639500D16E7C /* KWFontPicker.m */,
+				C1895F151F9F639500D16E7C /* KWTextEditor.h */,
+				C1895F141F9F639500D16E7C /* KWTextEditor.m */,
+				C1895F131F9F639400D16E7C /* ARTexts-Bridging-Header.h */,
+			);
+			name = KWFontPicker;
+			path = "New Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -208,6 +229,7 @@
 				TargetAttributes = {
 					C114EBA51F792BB900F9E444 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 					};
 					C114EBBD1F792BB900F9E444 = {
@@ -275,12 +297,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1895F191F9F639500D16E7C /* KWFontPicker.m in Sources */,
 				C114EBDC1F792E5100F9E444 /* ARSession.swift in Sources */,
 				C114EBDE1F792FF200F9E444 /* ARText.swift in Sources */,
 				C114EBB01F792BB900F9E444 /* ViewController.swift in Sources */,
 				C114EBAE1F792BB900F9E444 /* Scene.swift in Sources */,
 				C1B85B681F7988A600FEED82 /* ARAnchorText.swift in Sources */,
 				C114EBAA1F792BB900F9E444 /* AppDelegate.swift in Sources */,
+				C1895F181F9F639500D16E7C /* KWTextEditor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,12 +470,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SRBQ5SCF5X;
 				INFOPLIST_FILE = ARTexts/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.njligames.ios.ARTexts;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "New Group/ARTexts-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -461,12 +488,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SRBQ5SCF5X;
 				INFOPLIST_FILE = ARTexts/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.njligames.ios.ARTexts;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "New Group/ARTexts-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
