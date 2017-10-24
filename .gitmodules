@@ -1,0 +1,3 @@
+[submodule "KWFontPicker"]
+	path = KWFontPicker
+	url = https://github.com/kawanet/KWFontPicker.git
