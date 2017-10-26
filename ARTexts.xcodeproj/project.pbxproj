@@ -20,6 +20,7 @@
 		C114EBDE1F792FF200F9E444 /* ARText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBDD1F792FF200F9E444 /* ARText.swift */; };
 		C1895F181F9F639500D16E7C /* KWTextEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = C1895F141F9F639500D16E7C /* KWTextEditor.m */; };
 		C1895F191F9F639500D16E7C /* KWFontPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = C1895F161F9F639500D16E7C /* KWFontPicker.m */; };
+		C1895F1B1FA0C74300D16E7C /* iosfonts.json in Resources */ = {isa = PBXBuildFile; fileRef = C1895F1A1FA0C74300D16E7C /* iosfonts.json */; };
 		C1B85B681F7988A600FEED82 /* ARAnchorText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B85B671F7988A600FEED82 /* ARAnchorText.swift */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,7 @@
 		C1895F151F9F639500D16E7C /* KWTextEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KWTextEditor.h; path = KWFontPicker/src/KWTextEditor.h; sourceTree = SOURCE_ROOT; };
 		C1895F161F9F639500D16E7C /* KWFontPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KWFontPicker.m; path = KWFontPicker/src/KWFontPicker.m; sourceTree = SOURCE_ROOT; };
 		C1895F171F9F639500D16E7C /* KWFontPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KWFontPicker.h; path = KWFontPicker/src/KWFontPicker.h; sourceTree = SOURCE_ROOT; };
+		C1895F1A1FA0C74300D16E7C /* iosfonts.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = iosfonts.json; path = data/iosfonts.json; sourceTree = "<group>"; };
 		C1B85B671F7988A600FEED82 /* ARAnchorText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARAnchorText.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -94,6 +96,7 @@
 		C114EB9D1F792BB900F9E444 = {
 			isa = PBXGroup;
 			children = (
+				C1895F1A1FA0C74300D16E7C /* iosfonts.json */,
 				C1895F121F9F633000D16E7C /* KWFontPicker */,
 				C114EBA81F792BB900F9E444 /* ARTexts */,
 				C114EBC11F792BB900F9E444 /* ARTextsTests */,
@@ -273,6 +276,7 @@
 				C114EBB81F792BB900F9E444 /* LaunchScreen.storyboard in Resources */,
 				C114EBB51F792BB900F9E444 /* Assets.xcassets in Resources */,
 				C114EBB31F792BB900F9E444 /* Main.storyboard in Resources */,
+				C1895F1B1FA0C74300D16E7C /* iosfonts.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

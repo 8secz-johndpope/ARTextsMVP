@@ -57,6 +57,8 @@ class Scene: SKScene {
                         let viewController = self.view!.window!.rootViewController as! ViewController
                         viewController.createNew = false
                         viewController.handleKeyboard(textAnchor.text)
+                        viewController.currentLabel = (node as! SKLabelNode)
+                        viewController.fontPicker.isHidden = false
                     }
                 }
             }

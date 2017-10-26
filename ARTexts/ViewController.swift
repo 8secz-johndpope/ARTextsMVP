@@ -32,10 +32,10 @@ class ViewController: UIViewController, ARSKViewDelegate {
     
     public var currentField : UITextField?
     
-    private var currentLabel : SKLabelNode? = nil
+    public var currentLabel : SKLabelNode? = nil
     public var createNew : Bool = false
     
-    private var fontPicker : KWFontPicker = KWFontPicker()
+    public var fontPicker : KWFontPicker = KWFontPicker()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,21 +59,61 @@ class ViewController: UIViewController, ARSKViewDelegate {
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         
-        fontPicker.fontList = ["AmericanTypewriter"]
-        fontPicker.minFontSize = 8
-        fontPicker.maxFontSize = 30
-        fontPicker.colorVariants = KWFontPickerColorVariants.variants666
-        fontPicker.grayVariants = 16
         
-        fontPicker.setChangeHandler((() -> Void)!{
-            DispatchQueue.main.async {
+        //https://github.com/mcritz/iosfonts/blob/master/data/iosfonts.json
+        var filePath = Bundle.main.path(forResource: "iosfonts", ofType:"json")
+        var data = NSData(contentsOfFile:filePath!)
+//        let json = try? JSONSerialization.jsonObject(with: data, options: [])
+//        let json = try JSONSerialization.jsonObject(with: data, options: .binary)
+        
+        
+        
+        
+        
+        if let urlContent = data {
+            do {
+                let jsonResult = try JSONSerialization.jsonObject(with: urlContent as Data, options: JSONSerialization.ReadingOptions.mutableContainers)
+                
+                var fontList : [String] = []
+                let dict = jsonResult as? NSDictionary
+                let fonts = dict!["fonts"] as? NSArray
+                for font in fonts! {
+                    if let font = font as? NSDictionary {
+//                        print(vehicle.registration)
+                        let family_name = font["family_name"] as! String
+                        fontList.append(family_name)
+                    }
+                }
+                
+                fontPicker.fontList = fontList
+                fontPicker.minFontSize = 8
+                fontPicker.maxFontSize = 72
+                fontPicker.colorVariants = KWFontPickerColorVariants.variants666
+                fontPicker.grayVariants = 16
+                
+                fontPicker.setChangeHandler((() -> Void)!{
+                    DispatchQueue.main.async {
+                        guard let label = self.currentLabel else { return }
+                        label.fontName = self.fontPicker.selectedFontName()
+                        label.fontSize = self.fontPicker.selectedFontSize()
+                        label.fontColor = self.fontPicker.selectedColor()
+                    }
+                })
+                
+                self.sceneView.addSubview(fontPicker)
+                
+                fontPicker.isHidden = true
                 
             }
-        })
-        
-        self.sceneView.addSubview(fontPicker)
-        
-        fontPicker.isHidden = true
+            catch
+            {
+                print("JSON serialization failed")
+            }
+        }
+        else
+        {
+            print("ERROR FOUND HERE")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -120,6 +160,8 @@ class ViewController: UIViewController, ARSKViewDelegate {
                 print("UPDATED the artext")
             }
         }
+        
+        fontPicker.isHidden = true
     }
     
     func deleteLabel(_ label: SKLabelNode)
@@ -151,7 +193,15 @@ class ViewController: UIViewController, ARSKViewDelegate {
         
         createNew = true
         
+        fontPicker.selectColor(label.color, animated: false)
+        fontPicker.selectFontName(label.fontName, animated: false)
+        fontPicker.selectFontSize(label.fontSize, animated: false)
+        fontPicker.isHidden = false
+        
         currentLabel = label
+        
+        
+        
     }
     
     func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
