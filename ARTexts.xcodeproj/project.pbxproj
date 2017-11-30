@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C101E7E01FBDCE3D0054CD69 /* TextAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C101E7DF1FBDCE3D0054CD69 /* TextAnchor.swift */; };
 		C114EBAA1F792BB900F9E444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBA91F792BB900F9E444 /* AppDelegate.swift */; };
 		C114EBAC1F792BB900F9E444 /* Scene.sks in Resources */ = {isa = PBXBuildFile; fileRef = C114EBAB1F792BB900F9E444 /* Scene.sks */; };
 		C114EBAE1F792BB900F9E444 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C114EBAD1F792BB900F9E444 /* Scene.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C101E7DF1FBDCE3D0054CD69 /* TextAnchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAnchor.swift; sourceTree = "<group>"; };
 		C114EBA61F792BB900F9E444 /* ARTexts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARTexts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C114EBA91F792BB900F9E444 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C114EBAB1F792BB900F9E444 /* Scene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Scene.sks; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				C114EBDB1F792E5100F9E444 /* ARSession.swift */,
 				C114EBDD1F792FF200F9E444 /* ARText.swift */,
 				C1B85B671F7988A600FEED82 /* ARAnchorText.swift */,
+				C101E7DF1FBDCE3D0054CD69 /* TextAnchor.swift */,
 			);
 			path = ARTexts;
 			sourceTree = "<group>";
@@ -306,6 +309,7 @@
 				C114EBDE1F792FF200F9E444 /* ARText.swift in Sources */,
 				C114EBB01F792BB900F9E444 /* ViewController.swift in Sources */,
 				C114EBAE1F792BB900F9E444 /* Scene.swift in Sources */,
+				C101E7E01FBDCE3D0054CD69 /* TextAnchor.swift in Sources */,
 				C1B85B681F7988A600FEED82 /* ARAnchorText.swift in Sources */,
 				C114EBAA1F792BB900F9E444 /* AppDelegate.swift in Sources */,
 				C1895F181F9F639500D16E7C /* KWTextEditor.m in Sources */,
@@ -476,10 +480,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SRBQ5SCF5X;
+				DEVELOPMENT_TEAM = 6UWRM7QGYR;
 				INFOPLIST_FILE = ARTexts/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.njligames.ios.ARTexts;
+				PRODUCT_BUNDLE_IDENTIFIER = com.navitudes.artexts.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "New Group/ARTexts-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -494,10 +498,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SRBQ5SCF5X;
+				DEVELOPMENT_TEAM = 6UWRM7QGYR;
 				INFOPLIST_FILE = ARTexts/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.njligames.ios.ARTexts;
+				PRODUCT_BUNDLE_IDENTIFIER = com.navitudes.artexts.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "New Group/ARTexts-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;

@@ -28,6 +28,10 @@ class ViewController: UIViewController, ARSKViewDelegate {
     var startPitch:Double = 0.0
     var startRoll:Double = 0.0
     
+    var remoteReady:Bool = false
+    var arReady:Bool = false
+    var blurView:UIVisualEffectView?
+    
     var currentCameraLocation: matrix_float4x4?
     
     public var currentField : UITextField?
@@ -37,8 +41,74 @@ class ViewController: UIViewController, ARSKViewDelegate {
     
     public var fontPicker : KWFontPicker = KWFontPicker()
     
+    private var panGestureRecognizer: UIPanGestureRecognizer?
+    public var slideDirection: Float = 0
+    
+//    var arSession:ARSession = ARSession("http://localhost:3000")
+    var arSession:ARSession = ARSession("https://artexts.herokuapp.com")
+    var arText:ARText = ARText("https://artexts.herokuapp.com")
+    
+    @objc func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
+        guard let velocity = panGestureRecognizer?.velocity(in: self.view) else {return}
+        
+        if(velocity.y > 0)
+        {
+            self.slideDirection = 1
+        }
+        else if(velocity.y < 0)
+        {
+            self.slideDirection = -1
+        }
+        else
+        {
+            self.slideDirection = 0
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
+//        arText.delete("5a1eccb7c127d9002136ba07", arText: {(success:Bool) in
+//            if(success)
+//            {
+//                print("removed the text")
+//            }
+//            else
+//            {
+//                print("could not remove the text")
+//            }
+//        })
+////
+//        arText.delete("5a1ecac3c127d9002136ba06", arText: {(success:Bool) in
+//            if(success)
+//            {
+//                print("removed the text")
+//            }
+//            else
+//            {
+//                print("could not remove the text")
+//            }
+//        })
+
+        
+        let blur = UIBlurEffect(style: .regular)
+        self.blurView = UIVisualEffectView(effect: blur)
+        self.blurView?.frame = self.view.bounds
+        self.blurView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        self.view.addSubview(self.blurView!)
+        
+//        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(handleGesture))
+//        swipeUp.direction = .up
+//        self.view.addGestureRecognizer(swipeUp)
+//
+//        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(handleGesture))
+//        swipeDown.direction = .down
+//        self.view.addGestureRecognizer(swipeDown)
+        
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleGesture))
+        self.view.addGestureRecognizer(panGestureRecognizer!)
         
         // Set the view's delegate
         sceneView.delegate = self
@@ -61,14 +131,8 @@ class ViewController: UIViewController, ARSKViewDelegate {
         
         
         //https://github.com/mcritz/iosfonts/blob/master/data/iosfonts.json
-        var filePath = Bundle.main.path(forResource: "iosfonts", ofType:"json")
-        var data = NSData(contentsOfFile:filePath!)
-//        let json = try? JSONSerialization.jsonObject(with: data, options: [])
-//        let json = try JSONSerialization.jsonObject(with: data, options: .binary)
-        
-        
-        
-        
+        let filePath = Bundle.main.path(forResource: "iosfonts", ofType:"json")
+        let data = NSData(contentsOfFile:filePath!)
         
         if let urlContent = data {
             do {
@@ -77,9 +141,10 @@ class ViewController: UIViewController, ARSKViewDelegate {
                 var fontList : [String] = []
                 let dict = jsonResult as? NSDictionary
                 let fonts = dict!["fonts"] as? NSArray
-                for font in fonts! {
-                    if let font = font as? NSDictionary {
-//                        print(vehicle.registration)
+                for font in fonts!
+                {
+                    if let font = font as? NSDictionary
+                    {
                         let family_name = font["family_name"] as! String
                         fontList.append(family_name)
                     }
@@ -119,11 +184,11 @@ class ViewController: UIViewController, ARSKViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Create a session configuration
-        let configuration = ARWorldTrackingConfiguration()
-
-        // Run the view's session
-        sceneView.session.run(configuration)
+//        // Create a session configuration
+//        let configuration = ARWorldTrackingConfiguration()
+//
+//        // Run the view's session
+//        sceneView.session.run(configuration)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -144,8 +209,30 @@ class ViewController: UIViewController, ARSKViewDelegate {
         {
             if label.text != ""
             {
-                //MARK: Create the label from the scene
-                print("ADDED a new artext to the scene")
+                if let dictParams: NSMutableDictionary = label.userData
+                {
+                    if let textAnchor:ARAnchorText = dictParams.object(forKey: "textAnchor") as? ARAnchorText
+                    {
+                        //MARK: Create the label from the scene
+                        let transform:matrix_float4x4 = textAnchor.transform
+                        
+                        arText.create(label.text!, transform, arText: {(id:String, success:Bool) in
+                            
+                            DispatchQueue.main.async {
+                                if(success)
+                                {
+                                    textAnchor.userData = ["textID" : id]
+                                    
+                                    print("ADDED a new artext to the scene")
+                                }
+                                else
+                                {
+                                    print("Did not add a new artext to the scene, but tried")
+                                }
+                            }
+                        })
+                    }
+                }
             }
         }
         else
@@ -157,7 +244,34 @@ class ViewController: UIViewController, ARSKViewDelegate {
             else
             {
                 //MARK: Update the label from the scene
-                print("UPDATED the artext")
+                if let dictParams: NSMutableDictionary = label.userData
+                {
+                    if let textAnchor:ARAnchorText = dictParams.object(forKey: "textAnchor") as? ARAnchorText
+                    {
+                        if let textAnchor_dictParams: NSMutableDictionary = textAnchor.userData
+                        {
+                            if let textId:String = textAnchor_dictParams.object(forKey: "textID") as? String
+                            {
+                                let transform:matrix_float4x4 = textAnchor.transform
+                                let text:String = label.text!
+                                
+                                arText.update(textId, text, transform, arText: {(success:Bool) in
+                                    
+                                    DispatchQueue.main.async {
+                                        if(success)
+                                        {
+                                            print("UPDATED the artext")
+                                        }
+                                        else
+                                        {
+                                            print("Did not update the artext, but tried")
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
             }
         }
         
@@ -174,10 +288,35 @@ class ViewController: UIViewController, ARSKViewDelegate {
         label.removeFromParent()
         
         //MARK: Delete the label from the scene
-        print("delete the artext")
+        if let dictParams: NSMutableDictionary = label.userData
+        {
+            if let textAnchor:ARAnchorText = dictParams.object(forKey: "textAnchor") as? ARAnchorText
+            {
+                if let textAnchor_dictParams: NSMutableDictionary = textAnchor.userData
+                {
+                    if let textId:String = textAnchor_dictParams.object(forKey: "textID") as? String
+                    {
+                        arText.delete(textId, arText: {(success:Bool) in
+                            
+                            DispatchQueue.main.async {
+                                if(success)
+                                {
+                                    print("DELETED the artext")
+                                }
+                                else
+                                {
+                                    print("Did not delete the artext, but tried")
+                                }
+                            }
+                        })
+
+                    }
+                }
+            }
+        }
     }
     
-    func createLabel(_ text: String, labelNodeFor textAnchor: ARAnchorText)
+    func createLabel(_ text: String, _ textAnchor: ARAnchorText, _ isLoaded: Bool)
     {
         let label = SKLabelNode(fontNamed: "Courier-Bold")
         label.text = text
@@ -185,68 +324,122 @@ class ViewController: UIViewController, ARSKViewDelegate {
         label.verticalAlignmentMode = .center
         label.name = "label"
         label.userData = ["textAnchor" : textAnchor]
+        label.color = SKColor(displayP3Red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        label.fontSize = 32
         
         let cancelButton = SKSpriteNode(imageNamed: "Cancel")
         cancelButton.position = CGPoint(x: 0, y: label.frame.size.height + (label.frame.size.height * 0.5))
         cancelButton.name = "cancelButton"
         label.addChild(cancelButton)
         
-        createNew = true
+        if(isLoaded)
+        {
+            cancelButton.isHidden = true
+            fontPicker.isHidden = true
+            createNew = false
+            
+            label.fontName = "Courier-Bold"
+            label.fontColor = SKColor(displayP3Red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+            label.fontSize = 32
+        }
+        else
+        {
+            cancelButton.isHidden = false
+            fontPicker.isHidden = false
+            createNew = true
+        }
         
         fontPicker.selectColor(label.color, animated: false)
         fontPicker.selectFontName(label.fontName, animated: false)
         fontPicker.selectFontSize(label.fontSize, animated: false)
-        fontPicker.isHidden = false
         
         currentLabel = label
         
-        
-        
     }
     
-    func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
+    func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode?
+    {
+        
+        
         // Create and configure a node for the anchor added to the view's session.
         
+        
+        
         let previousLabel = currentLabel
+//        guard let textAnchor = anchor as? ARAnchorText else {return nil}
         
         
-        let textAnchor:ARAnchorText = anchor as! ARAnchorText
+//        let textAnchor:ARAnchorText = anchor as! ARAnchorText
         
-        self.createLabel(textAnchor.text, labelNodeFor: textAnchor)
+        guard let textAnchor = try anchor
+            as? ARAnchorText else {
+                
+                print("error trying to convert anchor")
+                return nil
+        }
         
-        self.handleKeyboard(textAnchor.text)
-        
-        if nil != previousLabel
+        if let textAnchor_dictParams: NSMutableDictionary = textAnchor.userData
         {
-            if previousLabel?.text == ""
+            if let textID:String = textAnchor_dictParams.object(forKey: "textID") as? String
             {
-                deleteLabel(previousLabel!)
-            }
-            else
-            {
-                guard let cancelButton = previousLabel?.childNode(withName: "cancelButton") else {return currentLabel}
-                cancelButton.isHidden = true
-                self.endEditing(previousLabel!)
+                self.createLabel(textAnchor.text, textAnchor, true)
             }
         }
+        else
+        {
+            self.createLabel(textAnchor.text, textAnchor, false)
+            
+            self.handleKeyboard(textAnchor.text)
+            
+            if nil != previousLabel
+            {
+                if previousLabel?.text == ""
+                {
+                    deleteLabel(previousLabel!)
+                }
+                else
+                {
+                    guard let cancelButton = previousLabel?.childNode(withName: "cancelButton") else {return currentLabel}
+                    cancelButton.isHidden = true
+                    self.endEditing(previousLabel!)
+                }
+            }
+        }
+        
+        
         
         return currentLabel;
     }
     
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
         
+        switch camera.trackingState {
+        case .notAvailable:
+            self.arReady = false
+            self.blurView!.isHidden = false
+        case .limited:
+            self.blurView!.isHidden = false
+            self.arReady = false
+        case .normal:
+            self.arReady = true
+            self.blurView!.isHidden = true
+        }
     }
     
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
-    }
-    
-    func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
-    }
+//    func session(_ session: ARSession, didFailWithError error: Error) {
+//        // Present an error message to the user
+//
+//    }
+//
+//    func sessionWasInterrupted(_ session: ARSession) {
+//        // Inform the user that the session has been interrupted, for example, by presenting an overlay
+//
+//    }
+//
+//    func sessionInterruptionEnded(_ session: ARSession) {
+//        // Reset tracking and/or remove existing anchors if consistent tracking is required
+//
+//    }
     
     func startRemoteARSession()
     {
@@ -257,39 +450,96 @@ class ViewController: UIViewController, ARSKViewDelegate {
         sceneView.session.run(configuration)
         sceneView.session.delegate = self
         
-        guard let latitude:Double = self.currentCLLocation?.coordinate.latitude else {
-            print("Error: cannot create URL")
-            return
-        }
+        guard let cl = self.currentCLLocation else { return }
         
-        guard let longitude:Double = self.currentCLLocation?.coordinate.longitude else {
-            print("Error: cannot create URL")
-            return
-        }
+        let latitude:Double = cl.coordinate.latitude
+        let longitude:Double = cl.coordinate.longitude
+        let altitude:Double = cl.altitude
+        let horizontalAccuracy:Double = cl.horizontalAccuracy
+        let verticalAccuracy:Double = cl.verticalAccuracy
+        let course:Double = cl.course
+        let speed:Double = cl.speed
         
-        guard let altitude:Double = self.currentCLLocation?.altitude else {
-            print("Error: cannot create URL")
-            return
-        }
+        let defaults = UserDefaults.standard
         
-        guard let horizontalAccuracy:Double = self.currentCLLocation?.horizontalAccuracy else {
-            print("Error: cannot create URL")
-            return
+        if let sessionId = defaults.string(forKey: "sessionId")
+        {
+            arSession.read(sessionId, arSession: {(latitude:Double, longitude:Double, altitude:Double, horizontalAccuracy:Double, verticalAccuracy:Double, course:Double, speed:Double, yaw:Double, pitch:Double, roll:Double, success:Bool) in
+                
+                self.remoteReady = true
+                
+                self.startYaw = yaw
+                self.startPitch = pitch
+                self.startRoll = roll
+                
+                self.arText.list(arText: {(success:Bool, texts:Array<[String:Any]>) in
+                    for _arText in texts
+                    {
+                        guard let text = _arText["text"] as? String else {
+                            continue
+                        }
+                        
+                        guard let t = _arText["transform"] as? String else {
+                            continue
+                        }
+                        
+                        guard let _id = _arText["_id"] as? String else {
+                            continue
+                        }
+                        
+                        guard let _sessionId = _arText["sessionId"] as? String else {
+                            continue
+                        }
+                        
+                        if(_sessionId != sessionId)
+                        {
+                            continue
+                        }
+                        
+                        let transformComponents = t.components(separatedBy: ",")
+                        
+                        let numberFormatter = NumberFormatter()
+                        
+                        let transform = matrix_float4x4(float4(x: (numberFormatter.number(from: transformComponents[0])?.floatValue)!,
+                                                               y: (numberFormatter.number(from: transformComponents[1])?.floatValue)!,
+                                                               z: (numberFormatter.number(from: transformComponents[2])?.floatValue)!,
+                                                               w: (numberFormatter.number(from: transformComponents[3])?.floatValue)!),
+                                                        float4(x: (numberFormatter.number(from: transformComponents[4])?.floatValue)!,
+                                                               y: (numberFormatter.number(from: transformComponents[5])?.floatValue)!,
+                                                               z: (numberFormatter.number(from: transformComponents[6])?.floatValue)!,
+                                                               w: (numberFormatter.number(from: transformComponents[7])?.floatValue)!),
+                                                        float4(x: (numberFormatter.number(from: transformComponents[8])?.floatValue)!,
+                                                               y: (numberFormatter.number(from: transformComponents[9])?.floatValue)!,
+                                                               z: (numberFormatter.number(from: transformComponents[10])?.floatValue)!,
+                                                               w: (numberFormatter.number(from: transformComponents[11])?.floatValue)!),
+                                                        float4(x: (numberFormatter.number(from: transformComponents[12])?.floatValue)!,
+                                                               y: (numberFormatter.number(from: transformComponents[13])?.floatValue)!,
+                                                               z: (numberFormatter.number(from: transformComponents[14])?.floatValue)!,
+                                                               w: (numberFormatter.number(from: transformComponents[15])?.floatValue)!))
+                        
+                        print("\(text) : \(transform)")
+                        
+                        DispatchQueue.main.async {
+                            guard let scene = self.sceneView.scene as? Scene else {
+                                return
+                            }
+                            scene.loadText(transform, _id)
+                        }
+                    }
+                })
+                
+            })
         }
-        
-        guard let verticalAccuracy:Double = self.currentCLLocation?.verticalAccuracy else {
-            print("Error: cannot create URL")
-            return
-        }
-        
-        guard let course:Double = self.currentCLLocation?.course else {
-            print("Error: cannot create URL")
-            return
-        }
-        
-        guard let speed:Double = self.currentCLLocation?.speed else {
-            print("Error: cannot create URL")
-            return
+        else
+        {
+            arSession.create(latitude, longitude, altitude, horizontalAccuracy, verticalAccuracy, course, speed, self.startYaw, self.startPitch, self.startRoll, arSession: {(id:String, success:Bool) in
+                
+                defaults.setValue(id, forKey: "sessionId")
+                defaults.synchronize()
+                
+                self.remoteReady = true
+                
+            })
         }
     }
     
@@ -338,18 +588,21 @@ extension ViewController:CLLocationManagerDelegate
                     [weak self] (data: CMDeviceMotion?, error: Error?) in
                     
                     guard let data = data else { return }
+                    guard let vc = self else { return }
                     
-                    self?.currentAttitude = data.attitude
+                    vc.currentAttitude = data.attitude
                     
-                    if (self?.startAttitude == nil)
-                    {
-                        self?.startAttitude = data.attitude
-                        
-                        self?.startRoll = (self?.startAttitude?.roll)!
-                        self?.startYaw = (self?.startAttitude?.yaw)!
-                        self?.startPitch = (self?.startAttitude?.pitch)!
-                        
-                        self?.startRemoteARSession()
+                    DispatchQueue.main.async {
+                        if (vc.startAttitude == nil)
+                        {
+                            vc.startAttitude = data.attitude
+                            
+                            vc.startRoll = (vc.startAttitude?.roll)!
+                            vc.startYaw = (vc.startAttitude?.yaw)!
+                            vc.startPitch = (vc.startAttitude?.pitch)!
+                            
+                            vc.startRemoteARSession()
+                        }
                     }
                 }
             }
@@ -393,6 +646,8 @@ extension ViewController: UITextFieldDelegate
             
             self.view.endEditing(true)
             self.endEditing(self.currentLabel!)
+            
+//            self.currentLabel = nil
         }
         return false
     }

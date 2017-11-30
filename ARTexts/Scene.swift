@@ -11,6 +11,9 @@ import ARKit
 
 class Scene: SKScene {
     
+    private var currentAnchor:ARAnchorText?
+    private var startTouch:UITouch?
+    
     override func didMove(to view: SKView) {
         // Setup your scene here
     }
@@ -53,6 +56,9 @@ class Scene: SKScene {
                 {
                     if let textAnchor:ARAnchorText = dictParams.object(forKey: "textAnchor") as? ARAnchorText
                     {
+                        currentAnchor = textAnchor
+                        startTouch = touch
+                        
                         print("The text is: `%s`", textAnchor.text)
                         let viewController = self.view!.window!.rootViewController as! ViewController
                         viewController.createNew = false
@@ -84,7 +90,39 @@ class Scene: SKScene {
                 // Add a new anchor to the session
                 let anchor = ARAnchorText(transform: transform)
                 sceneView.session.add(anchor: anchor)
+                
+                currentAnchor = anchor
+                startTouch = touch
             }
         }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
+        currentAnchor = nil
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
+        guard let touchBegin = startTouch else { return }
+        guard let touch = touches.first else { return }
+        guard let anchor = currentAnchor else { return }
+        guard let viewController = self.view!.window!.rootViewController as? ViewController else { return }
+
+        
+    }
+    
+    func loadText(_ transform: matrix_float4x4, _ id: String)
+    {
+        guard let sceneView = self.view as? ARSKView else {
+            return
+        }
+        
+        // Add a new anchor to the session
+        let anchor = ARAnchorText(transform: transform)
+        sceneView.session.add(anchor: anchor)
+        
+        anchor.userData = ["textID" : id]
+        
     }
 }

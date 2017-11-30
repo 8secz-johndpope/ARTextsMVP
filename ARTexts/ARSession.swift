@@ -79,7 +79,7 @@ class ARSession
             // check for any errors
             guard error == nil else {
                 arSession("", false)
-                print("error calling GET on /texts")
+                print("error calling GET on /sessions")
                 print(error!)
                 return
             }
