@@ -70,7 +70,12 @@ class ViewController: UIViewController, ARSKViewDelegate {
         
         
         
-//        arText.delete("5a1eccb7c127d9002136ba07", arText: {(success:Bool) in
+        
+        
+        
+        
+        
+//        arText.delete("5a25754906f0ee00237342ab", arText: {(success:Bool) in
 //            if(success)
 //            {
 //                print("removed the text")
@@ -80,18 +85,14 @@ class ViewController: UIViewController, ARSKViewDelegate {
 //                print("could not remove the text")
 //            }
 //        })
-////
-//        arText.delete("5a1ecac3c127d9002136ba06", arText: {(success:Bool) in
-//            if(success)
-//            {
-//                print("removed the text")
-//            }
-//            else
-//            {
-//                print("could not remove the text")
-//            }
-//        })
-
+        
+        
+        
+        
+        
+        
+        
+        
         
         let blur = UIBlurEffect(style: .regular)
         self.blurView = UIVisualEffectView(effect: blur)
@@ -216,8 +217,8 @@ class ViewController: UIViewController, ARSKViewDelegate {
                         //MARK: Create the label from the scene
                         let transform:matrix_float4x4 = textAnchor.transform
                         
-                        arText.create(label.text!, transform, arText: {(id:String, success:Bool) in
-                            
+                        arText.create(label.text!, transform, label.fontSize, label.fontColor!, label.fontName!, arText: {(id:String, success:Bool) in
+                        
                             DispatchQueue.main.async {
                                 if(success)
                                 {
@@ -254,9 +255,13 @@ class ViewController: UIViewController, ARSKViewDelegate {
                             {
                                 let transform:matrix_float4x4 = textAnchor.transform
                                 let text:String = label.text!
+                                let fontName:String = label.fontName!
+                                let fontSize:CGFloat = label.fontSize
+                                let fontColor:SKColor = label.fontColor!
                                 
-                                arText.update(textId, text, transform, arText: {(success:Bool) in
-                                    
+                                arText.update(textId, text, transform, fontSize, fontColor, fontName, arText: {(success:Bool) in
+//                                arText.update(textId, text, transform, arText: {(success:Bool) in
+                                
                                     DispatchQueue.main.async {
                                         if(success)
                                         {
@@ -316,7 +321,45 @@ class ViewController: UIViewController, ARSKViewDelegate {
         }
     }
     
-    func createLabel(_ text: String, _ textAnchor: ARAnchorText, _ isLoaded: Bool)
+    func loadLabel(_ text: String, _ textAnchor: ARAnchorText, _ fontName: String, _ fontColor: SKColor, _ fontSize:CGFloat)
+    {
+        let label = SKLabelNode(fontNamed: fontName)
+        label.text = text
+        label.horizontalAlignmentMode = .center
+        label.verticalAlignmentMode = .center
+        label.name = "label"
+        label.userData = ["textAnchor" : textAnchor]
+        label.color = fontColor
+        label.fontSize = fontSize
+        
+        let cancelButton = SKSpriteNode(imageNamed: "Cancel")
+        cancelButton.position = CGPoint(x: 0, y: label.frame.size.height + (label.frame.size.height * 0.5))
+        cancelButton.name = "cancelButton"
+        let size = CGSize(width: cancelButton.size.width * 0.025, height: cancelButton.size.height * 0.025)
+        cancelButton.scale(to: size)
+        label.addChild(cancelButton)
+        
+        
+        cancelButton.isHidden = true
+        fontPicker.isHidden = true
+        createNew = false
+        
+        fontPicker.selectColor(label.color, animated: true)
+        fontPicker.selectFontName(label.fontName, animated: true)
+        fontPicker.selectFontSize(label.fontSize, animated: true)
+        
+        currentLabel = label
+        
+        
+        
+        currentLabel?.fontName = self.fontPicker.selectedFontName()
+        currentLabel?.fontSize = self.fontPicker.selectedFontSize()
+        currentLabel?.fontColor = self.fontPicker.selectedColor()
+        
+        
+    }
+    
+    func createLabel(_ text: String, _ textAnchor: ARAnchorText)
     {
         let label = SKLabelNode(fontNamed: "Courier-Bold")
         label.text = text
@@ -330,24 +373,13 @@ class ViewController: UIViewController, ARSKViewDelegate {
         let cancelButton = SKSpriteNode(imageNamed: "Cancel")
         cancelButton.position = CGPoint(x: 0, y: label.frame.size.height + (label.frame.size.height * 0.5))
         cancelButton.name = "cancelButton"
+        let size = CGSize(width: cancelButton.size.width * 0.025, height: cancelButton.size.height * 0.025)
+        cancelButton.scale(to: size)
         label.addChild(cancelButton)
         
-        if(isLoaded)
-        {
-            cancelButton.isHidden = true
-            fontPicker.isHidden = true
-            createNew = false
-            
-            label.fontName = "Courier-Bold"
-            label.fontColor = SKColor(displayP3Red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-            label.fontSize = 32
-        }
-        else
-        {
-            cancelButton.isHidden = false
-            fontPicker.isHidden = false
-            createNew = true
-        }
+        cancelButton.isHidden = false
+        fontPicker.isHidden = false
+        createNew = true
         
         fontPicker.selectColor(label.color, animated: false)
         fontPicker.selectFontName(label.fontName, animated: false)
@@ -382,12 +414,21 @@ class ViewController: UIViewController, ARSKViewDelegate {
         {
             if let textID:String = textAnchor_dictParams.object(forKey: "textID") as? String
             {
-                self.createLabel(textAnchor.text, textAnchor, true)
+                if let fontName:String = textAnchor_dictParams.object(forKey: "fontName") as? String
+                {
+                    if let fontColor:SKColor = textAnchor_dictParams.object(forKey: "fontColor") as? SKColor
+                    {
+                        if let fontSize:CGFloat = textAnchor_dictParams.object(forKey: "fontSize") as? CGFloat
+                        {
+                            self.loadLabel(textAnchor.text, textAnchor, fontName, fontColor, CGFloat(fontSize))
+                        }
+                    }
+                }
             }
         }
         else
         {
-            self.createLabel(textAnchor.text, textAnchor, false)
+            self.createLabel(textAnchor.text, textAnchor)
             
             self.handleKeyboard(textAnchor.text)
             
@@ -519,11 +560,64 @@ class ViewController: UIViewController, ARSKViewDelegate {
                         
                         print("\(text) : \(transform)")
                         
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        guard let fontSize = _arText["fontSize"] as? CGFloat else {
+                            continue
+                        }
+                        
+                        guard let fontColor = _arText["fontColor"] as? String else {
+                            continue
+                        }
+                        
+                        let fontColorComponents = fontColor.components(separatedBy: ",")
+                        
+                        let red = CGFloat((numberFormatter.number(from: fontColorComponents[0])?.floatValue)!)
+                        let green = CGFloat((numberFormatter.number(from: fontColorComponents[1])?.floatValue)!)
+                        let blue = CGFloat((numberFormatter.number(from: fontColorComponents[2])?.floatValue)!)
+                        let alpha = CGFloat((numberFormatter.number(from: fontColorComponents[3])?.floatValue)!)
+                        
+                        let f = SKColor(displayP3Red: red,
+                                        green: green,
+                                        blue: blue,
+                                        alpha: alpha)
+                        
+                        guard let fontName = _arText["fontName"] as? String else {
+                            continue
+                        }
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                         DispatchQueue.main.async {
                             guard let scene = self.sceneView.scene as? Scene else {
                                 return
                             }
-                            scene.loadText(transform, _id)
+                            scene.loadText(transform, _id, fontName, f, fontSize, text)
+                            
                         }
                     }
                 })

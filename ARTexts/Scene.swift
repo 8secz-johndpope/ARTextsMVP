@@ -112,7 +112,7 @@ class Scene: SKScene {
         
     }
     
-    func loadText(_ transform: matrix_float4x4, _ id: String)
+    func loadText(_ transform: matrix_float4x4, _ id: String, _ fontName: String, _ fontColor: SKColor, _ fontSize:CGFloat, _ text:String)
     {
         guard let sceneView = self.view as? ARSKView else {
             return
@@ -120,9 +120,16 @@ class Scene: SKScene {
         
         // Add a new anchor to the session
         let anchor = ARAnchorText(transform: transform)
+        anchor.text = text
+        
         sceneView.session.add(anchor: anchor)
         
-        anchor.userData = ["textID" : id]
+        anchor.userData = [
+            "textID" : id,
+            "fontName" : fontName,
+            "fontColor" : fontColor,
+            "fontSize" : fontSize
+        ]
         
     }
 }
